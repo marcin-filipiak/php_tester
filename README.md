@@ -25,7 +25,7 @@
   - Review test history.
 - 📊 **Scoring system**:
   - Automatic evaluation of closed questions,
-  - Manual grading of open questions,
+  - Automatic grading of open questions,
   - Average calculation per student/test/class.
 - 🧩 Role-based access (student/teacher).
 - 🔐 Simple login & session management.
