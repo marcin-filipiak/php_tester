@@ -32,7 +32,7 @@
                 <?php foreach ($answers as $a): ?>
                     <tr>
                         <td>
-                            <input type="checkbox" name="question_<?= $q['id'] ?>[]" value="<?= $a['id'] ?>">
+                            <input type="radio" name="question_<?= $q['id'] ?>" value="<?= $a['id'] ?>">
                         </td>
                         <td><?= nl2br(htmlspecialchars($a['content'])) ?></td>
                     </tr>

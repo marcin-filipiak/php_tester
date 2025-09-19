@@ -32,6 +32,12 @@ switch ($action) {
     case 'login':
         $controller = new LoginController();
         break;
+     case 'account_editor':
+        $controller = new AccountEditorController();
+        break;
+    case 'subjects':
+        $controller = new SubjectsController();
+    break;    
     case 'classes':
         $controller = new ClassesController();
     break;

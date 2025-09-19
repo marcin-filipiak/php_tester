@@ -1,0 +1,14 @@
+/* 
+    Document   : offer
+    Created on : 2012-07-25, 18:47:57
+    Author     : Marcin Fillipiak
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.cargo_sym {
+    border:dotted 1px; 
+    margin-right: 1px; 
+    padding: 2px; 
+    background: gainsboro;
+}

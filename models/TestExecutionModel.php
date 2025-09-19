@@ -82,7 +82,7 @@ class TestExecutionModel
     public function getAnswersByQuestion($questionId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $sql = "SELECT * FROM answers WHERE question_id = $questionId";
+        $sql = "SELECT * FROM answers WHERE question_id = $questionId ORDER BY RAND()";
         $res = $db->query($sql);
         $rows = $db->fetchAll($res);
         $db->closeConnection();

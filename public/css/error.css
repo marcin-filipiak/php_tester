@@ -1,0 +1,6 @@
+input.error {
+	border: 1px dotted red;
+	background:url('../gfx/watchdog-warning.png') no-repeat;
+        background-color: white;
+	padding-left:20px;
+}

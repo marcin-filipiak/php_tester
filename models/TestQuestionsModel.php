@@ -14,7 +14,7 @@ class TestQuestionsModel
 
         foreach ($questions as &$question) {
             $qId = $question['id'];
-            $aResult = $db->query("SELECT * FROM answers WHERE question_id = $qId");
+            $aResult = $db->query("SELECT * FROM answers WHERE question_id = $qId"); 
             $question['answers'] = $db->fetchAll($aResult);
         }
 

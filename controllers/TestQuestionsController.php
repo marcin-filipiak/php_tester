@@ -1,4 +1,5 @@
-<?php// Copyright (c) 2025 Marcin Filipiak
+<?php
+// Copyright (c) 2025 Marcin Filipiak
 // Author: Marcin Filipiak (https://github.com/marcin-filipiak)
 // This file is part of TESTER and is licensed under the MIT License.
 

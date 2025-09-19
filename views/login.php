@@ -13,7 +13,7 @@
         <div class="login-header">
             <img src="assets/gfx/art.jpg" alt="Logo" class="login-logo">
             <h1 class="app-title">Tester</h1>
-            <span style="font-size:9px;">&copy; Marcin Filipiak</span>
+            <span style="font-size:9px;">&copy; <a href="https://www.facebook.com/marcin.filipiak" target="_blank">Marcin Filipiak</a></span>
         </div>
 
         <form action="index.php?action=login" method="post">

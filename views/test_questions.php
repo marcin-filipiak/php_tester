@@ -17,6 +17,8 @@
 
 <h1>Pytania do testu</h1>
 
+<p>Pytań w teście: <?= count($questions) ?></p>
+
 <a href="index.php?action=test_questions&op=add&testId=<?= $testId ?>">+ Dodaj pytanie</a>
 
 <hr>
