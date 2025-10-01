@@ -25,7 +25,13 @@
 
 <?php foreach ($questions as $question): ?>
     <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc;">
-        <strong><?= $question['content'] ?></strong>
+        <?php
+            $content = htmlspecialchars($question['content']);
+            $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt="">', $content);
+            $content = nl2br($content);
+        ?>
+    
+        <strong><?= $content ?></strong>
         <div>
             <a href="index.php?action=test_questions&op=edit&questionId=<?= $question['id'] ?>&testId=<?= $testId ?>">Edytuj</a> | 
             <a href="index.php?action=test_questions&op=delete&questionId=<?= $question['id'] ?>&testId=<?= $testId ?>" onclick="return confirm('Na pewno usunąć?')">Usuń</a>

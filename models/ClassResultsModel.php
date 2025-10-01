@@ -30,6 +30,7 @@ class ClassResultsModel
                 user.lastname,
                 test.name AS test_name,
                 sct.result,
+                test.id AS test_id, 
                 sct.maxpoints,
                 sct.test_date
             FROM student_class_test sct
@@ -46,22 +47,41 @@ class ClassResultsModel
         $results = [];
 
         foreach ($rows as $row) {
-            $testName = $row['test_name'];
-            $userId = $row['user_id'];
-            $tests[$testName] = true;
+                $testName = $row['test_name'];
+                $testId   = $row['test_id'];
+                $userId   = $row['user_id'];
 
-            $results[$userId]['id'] = $userId;
-            $results[$userId]['name'] = $row['lastname'] . ' ' . $row['firstname'];
-            $results[$userId]['results'][$testName][] = [
-                'grade' => gradeFromPoints($row['result'], $row['maxpoints']) ,
-                'maxpoints' => $row['maxpoints'],
-                'result' => $row['result'],
-                'date' => date('Y-m-d', strtotime($row['test_date'])),
-                'id' => $row['id']
-            ];
-        }
+                $tests[$testName] = $testId;
 
-        return ['tests' => array_keys($tests), 'results' => $results];
+                $results[$userId]['id'] = $userId;
+                $results[$userId]['name'] = $row['lastname'] . ' ' . $row['firstname'];
+                $results[$userId]['results'][$testName][] = [
+                    'grade' => gradeFromPoints($row['result'], $row['maxpoints']),
+                    'maxpoints' => $row['maxpoints'],
+                    'result' => $row['result'],
+                    'date' => date('Y-m-d', strtotime($row['test_date'])),
+                    'id' => $row['id']
+                ];
+            }
+
+        return ['tests' => $tests, 'results' => $results];
+    }
+    
+    public function activateTestToday($testId, $classId)
+    {
+        $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        $today = date('Y-m-d');
+        $sql = "UPDATE test_class SET test_end = '$today'WHERE test_id = $testId AND class_id = $classId";
+        $db->query($sql);
+        $db->closeConnection();
+    }
+
+    public function clearTestResultsForClass($testId, $classId)
+    {
+        $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        $sql = "DELETE FROM student_class_test WHERE test_id = $testId AND class_id = $classId";
+        $db->query($sql);
+        $db->closeConnection();
     }
 
     public function deleteTestResultById($id)

@@ -26,7 +26,8 @@
     <input type="hidden" name="testId" value="<?= $questionData['test_id'] ?>">
 
     <label>Treść pytania:</label><br>
-    <textarea name="content" rows="3" cols="80"><?= htmlspecialchars($questionData['content']) ?></textarea><br><br>
+    <textarea name="content" rows="3" cols="80" id="content"><?= htmlspecialchars($questionData['content']) ?></textarea><br><br>
+    
     <button type="submit">Zapisz pytanie</button>
 </form>
 

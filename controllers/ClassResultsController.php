@@ -27,6 +27,24 @@ class ClassResultsController
             $id = intval($_GET['delete']);
             $model->deleteTestResultById($id);
         }
+        
+        // Ustawienie testu jako aktywny dzisiaj
+        if (!empty($_GET['activateTest'])) {
+            $testId = intval($_GET['activateTest']);
+            $classId = intval($_GET['classId']);
+            $model->activateTestToday($testId, $classId);
+            header("Location: index.php?action=class_results&classId=$classId");
+            exit;
+        }
+
+        // Wyczyść wyniki testu dla klasy
+        if (!empty($_GET['clearTestResults'])) {
+            $testId = intval($_GET['clearTestResults']);
+            $classId = intval($_GET['classId']);
+            $model->clearTestResultsForClass($testId, $classId);
+            header("Location: index.php?action=class_results&classId=$classId");
+            exit;
+        }
 
         $resultsData = null;
         if (!empty($selectedClass)) {

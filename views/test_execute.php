@@ -18,7 +18,12 @@
         
 <?php foreach ($questions as $q): ?>
     <div class="question-block">
-        <p><strong><?//= nl2br(htmlspecialchars($q['content'])) ?><?= $q['content'] ?></strong></p>
+            <?php
+                $content = htmlspecialchars($q['content']);
+                $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt="">', $content);
+                $content = nl2br($content);
+             ?>
+        <p><strong><?//= nl2br(htmlspecialchars($q['content'])) ?><?//= $q['content'] ?> <?= $content ?></strong></p>
 
         <?php
             $isInput = strpos($q['content'], '{?}') !== false;

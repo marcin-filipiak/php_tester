@@ -123,11 +123,11 @@ input, textarea {
     margin-top: 10px;
 }
 
-
-h2 {
-    color: #333;
+a img {
+    text-decoration: none; 
+    vertical-align: middle; 
 }
-
+    
 p {
     line-height: 1.5;
 }
