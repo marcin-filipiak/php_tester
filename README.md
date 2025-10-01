@@ -50,6 +50,7 @@ index.php                 # Main router
 /models/                  # Data models
 /views/                   # HTML templates
 /includes/                # Helpers, Database class, config
+/public                   # Media used in tests
 ```
 
 ---
