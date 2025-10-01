@@ -49,7 +49,7 @@ index.php                 # Main router
 /controllers/             # Controllers for actions
 /models/                  # Data models
 /views/                   # HTML templates
-/includes/                # Helpers, Database class, config
+/includes/                # Helpers, Database class
 /public/                  # Media used in tests
 /assets/                  # CSS and gfx used by system
 /config/                  # Config files
