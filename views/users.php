@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Wyświetlanie Strony</title>
+    <title>Lista użytkowników</title>
 </head>
 <body>
 
@@ -26,6 +26,13 @@
         <?php endforeach; ?>
     </select>
 </form>
+
+<hr>
+
+<label for="searchInput">Szukaj:</label>
+<input type="text" id="searchInput" onkeyup="searchUser()">
+
+<hr>
 
 <table>
     <thead>
@@ -55,5 +62,31 @@
 </table>
 
 </div>
+
+<script>
+function searchUser() {
+    const input = document.getElementById("searchInput");
+    const filter = input.value.toLowerCase();
+    const table = document.querySelector("table tbody");
+    const rows = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName("td");
+        let found = false;
+
+        for (let j = 0; j < cells.length - 1; j++) { // pomijamy kolumnę z akcjami
+            const text = cells[j].textContent.toLowerCase();
+            if (text.includes(filter)) {
+                found = true;
+                break;
+            }
+        }
+
+        rows[i].style.display = found ? "" : "none";
+    }
+}
+</script>
+
+
 </body>
 </html>

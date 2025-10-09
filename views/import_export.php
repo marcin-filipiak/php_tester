@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Wyświetlanie Strony</title>
+    <title>Import / Eksport pytań</title>
 </head>
 <body>
 
@@ -13,17 +13,22 @@
 <div class="editor-container">
     <h1>Import / Eksport pytań i odpowiedzi</h1>
 
-    <form method="GET" action="">
-        <input type="hidden" name="action" value="importexport">
-        <select name="test_id" onchange="this.form.submit()">
-            <option value="">Wybierz test</option>
-            <?php foreach ($tests as $test): ?>
-                <option value="<?= $test['id'] ?>" <?= $testId == $test['id'] ? 'selected' : '' ?>>
-                    <?= htmlspecialchars($test['name']) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
-    </form>
+  <label>Szukaj testu:</label>
+  <input type="text" id="search" placeholder="">
+
+  <form method="GET" action="">
+    <input type="hidden" name="action" value="importexport">
+    <label>Lub wybierz test:</label>
+    <select name="test_id" id="test_id">
+      <option value="">Wybierz test</option>
+      <?php foreach ($tests as $test): ?>
+        <option value="<?= $test['id'] ?>" <?= $testId == $test['id'] ? 'selected' : '' ?>>
+          <?= htmlspecialchars($test['name']) ?>
+        </option>
+      <?php endforeach; ?>
+    </select>
+    <button type="submit">Załaduj test</button>
+  </form>
 
     <hr>
 
@@ -73,6 +78,25 @@
             <textarea id="prompt" readonly></textarea>
         </label>
     </form>
+    
+
+        <script>
+        const search = document.getElementById("search");
+        const select = document.getElementById("test_id");
+        const options = Array.from(select.options);
+
+        search.addEventListener("input", function() {
+          const term = this.value.toLowerCase();
+          select.innerHTML = "";
+          select.appendChild(options[0]); // zostaw pierwszy "Wybierz test"
+
+          options.slice(1).forEach(opt => {
+            if (opt.text.toLowerCase().includes(term)) {
+              select.appendChild(opt);
+            }
+          });
+        });
+        </script>
     
         <script>
         function generatePrompt() {

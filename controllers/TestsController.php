@@ -105,7 +105,7 @@ class TestsController
         $u_id = $_SESSION['user_id'];
 
         $model = new TestModel();
-        $model->saveTest($testId, $name, $published, $questionrand, $number_per_student, $description, $id_subiect, $u_id, $shared);
+        $testId = $model->saveTest($testId, $name, $published, $questionrand, $number_per_student, $description, $id_subiect, $u_id, $shared);
 
         $classDates = $_POST['class_dates'] ?? [];
         $newClassDates = []; // Nie używamy, bo dodawanie jest osobnym formularzem

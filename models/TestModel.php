@@ -18,6 +18,8 @@ class TestModel
                     (`name`, `published`, `questionrand`, `number_per_student`, `description`, `id_subiect`, `u_id`, `shared`) 
                     VALUES 
                     ('$name', $published, $questionrand, $number_per_student, '$description', $id_subiect, $u_id, $shared)";
+            $db->query($sql);
+            $testId =  $db->getInsertId(); // <- pobranie nowego ID
         } else {
             $sql = "UPDATE `test` 
                     SET 
@@ -30,10 +32,11 @@ class TestModel
                         `u_id` = $u_id,
                         `shared` = $shared
                     WHERE `id` = $testId";
+            $db->query($sql);
         }
 
-        $db->query($sql);
         $db->closeConnection();
+        return $testId; // <- zwracamy ID testu
     }
 
     // Pobierz dane testu

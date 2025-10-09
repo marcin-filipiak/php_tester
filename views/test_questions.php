@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <title>Edytor Treści</title>
-    <style>
-    </style>
+    <title>Edytor Pytań</title>
 </head>
 <body>
 
@@ -17,9 +15,10 @@
 
 <h1>Pytania do testu</h1>
 
-<p>Pytań w teście: <?= count($questions) ?></p>
 
-<a href="index.php?action=test_questions&op=add&testId=<?= $testId ?>">+ Dodaj pytanie</a>
+<p>Pytań w teście: <?= count($questions) ?></p> 
+📝 <a href="index.php?action=tests&op=edit&testId=<?= $testId ?>">Edytor testu</a><br> 
+➕ <a href="index.php?action=test_questions&op=add&testId=<?= $testId ?>">Dodaj pytanie</a>
 
 <hr>
 
