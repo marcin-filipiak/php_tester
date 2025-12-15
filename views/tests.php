@@ -12,9 +12,14 @@
 
 <?php
 // Grupowanie testów po nazwie przedmiotu
+
 $subjects = [];
-foreach ($testList as $test) {
-    $subjects[$test['subiect_name']][] = $test;
+
+if (!empty($testList)) {
+    foreach ($testList as $test) {
+        $name = trim($test['subiect_name'] ?? 'Brak przedmiotu');
+        $subjects[$name][] = $test;
+    }
 }
 ?>
 

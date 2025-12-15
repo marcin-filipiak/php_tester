@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: tester_user
+      DB_PASSWORD: secure_pass_123
+      DB_NAME: tester_db
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secure_999
+      MYSQL_DATABASE: tester_db
+      MYSQL_USER: tester_user
+      MYSQL_PASSWORD: secure_pass_123
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+
+volumes:
+  db_data:  # ← to jest nazwany wolumen (uwaga: dwukropek!)

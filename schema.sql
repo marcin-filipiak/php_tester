@@ -123,6 +123,15 @@ CREATE TABLE `user` (
   `class` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `function`, `class`) VALUES
+(1, 'su', 'su', '$2y$12$3ls1pzhA6tcjvSF.4gJ/vemRVpH.HCkdX3coFpLEQ3oOA/b/9oEQe', '34cd1562467093672f648cf3317f7da41d2c2b0dea6c4f0f2cb8f2d3cf31b373', 1, NULL);
+
+
 --
 -- Indexes for dumped tables
 --

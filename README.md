@@ -59,22 +59,53 @@ index.php                 # Main router
 
 ## 📦 Getting Started
 
+### 🐳 Option 1: Run with Docker (Recommended)
+
+Requires [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](https://docs.docker.com/compose/install/).
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/marcin-filipiak/php_tester.git
+   cd TESTER
+   ```
+
+2. Start the application:
+   ```bash
+   docker-compose up --build
+   ```
+
+3. Open your browser and go to:  
+   👉 **http://localhost:8080**
+
+4. **Default teacher account** (available immediately after first launch):
+   - **Username:** `su`  
+   - **Password:** `su`
+
+> 💡 The database is automatically created and initialized on first run using the included `schema.sql` file.
+
+---
+
+### 💻 Option 2: Manual Setup (For Development)
+
 1. Clone the repository:
    ```bash
    git clone https://github.com/marcin-filipiak/TESTER.git
    cd TESTER
    ```
 
-2. Configure database connection in `config/Config.php`.
+2. Configure your database connection in `config/Config.php`.
 
-3. Import the SQL schema (you can create your own or request a sample schema).
+3. Import your database schema (e.g., `schema.sql`) into a local MySQL server.
 
-4. Start a local server:
+4. Start PHP’s built-in server:
    ```bash
    php -S localhost:8000
    ```
 
-5. Open `http://localhost:8000` in your browser.
+5. Open **http://localhost:8000** in your browser.
+
+> ⚠️ Make sure to **remove or disable the HTTPS enforcement block** in `index.php` if you’re not using SSL locally.
+
 
 ---
 

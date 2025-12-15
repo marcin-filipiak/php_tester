@@ -7,6 +7,7 @@ class UserModel
 {
 
     public $user_id = 0;
+    public $function = null; 
 
     // Przykładowa metoda do weryfikacji danych logowania
     public function verifyLogin($firstName, $lastName, $password)
@@ -136,5 +137,4 @@ public function updateUser($userId, $firstname, $lastname, $class, $function)
 
 }
 
-?>
 
