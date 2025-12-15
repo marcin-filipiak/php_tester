@@ -78,7 +78,8 @@ Requires [Docker](https://docs.docker.com/engine/install/) and [Docker Compose](
    👉 **http://localhost:8080**
 
 4. **Default teacher account** (available immediately after first launch):
-   - **Username:** `su`  
+   - **Firstname:** `su`  
+   - **Lastname:** `su`  
    - **Password:** `su`
 
 > 💡 The database is automatically created and initialized on first run using the included `schema.sql` file.
