@@ -12,6 +12,8 @@ services:
       DB_USER: tester_user
       DB_PASSWORD: secure_pass_123
       DB_NAME: tester_db
+    volumes:                     
+      - .:/var/www/html          
 
   db:
     image: mysql:8.0
@@ -22,9 +24,8 @@ services:
       MYSQL_USER: tester_user
       MYSQL_PASSWORD: secure_pass_123
     volumes:
-      - db_data:/var/lib/mysql
+      - tester_db_data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
-
 volumes:
-  db_data:  # ← to jest nazwany wolumen (uwaga: dwukropek!)
+  tester_db_data:
