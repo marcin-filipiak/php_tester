@@ -16,7 +16,7 @@
 <form method="POST" action="">
     <input type="hidden" name="testId" value="<?= $testData['id'] ?>">
     <!-- pola edycji testu -->
-    <input type="text" name="name" value="<?= htmlspecialchars($testData['name']) ?>" placeholder="Nazwa testu" required>>
+    <input type="text" name="name" value="<?= htmlspecialchars($testData['name']) ?>" placeholder="Nazwa testu" required>
     <textarea name="description"><?= htmlspecialchars($testData['description']) ?></textarea>
 
     <table>

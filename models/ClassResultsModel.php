@@ -8,13 +8,20 @@ class ClassResultsModel
     public function getAllClasses()
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $sql = "SELECT c.id_class, c.name 
-                FROM class c
-                JOIN user u ON u.class = c.id_class
-                GROUP BY c.id_class, c.name
-                ORDER BY c.name ASC";
-        $result = $db->query($sql);
-        $classes = $db->fetchAll($result);
+        $stmt = $db->prepare("
+            SELECT c.id_class, c.name 
+            FROM class c
+            JOIN user u ON u.class = c.id_class
+            GROUP BY c.id_class, c.name
+            ORDER BY c.name ASC
+        ");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $classes = [];
+        while ($row = $result->fetch_assoc()) {
+            $classes[] = $row;
+        }
+        $stmt->close();
         $db->closeConnection();
         return $classes;
     }
@@ -22,7 +29,7 @@ class ClassResultsModel
     public function getTestResultsForClass($classId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $sql = "
+        $stmt = $db->prepare("
             SELECT 
                 sct.id,
                 user.user_id,
@@ -36,59 +43,72 @@ class ClassResultsModel
             FROM student_class_test sct
             JOIN user ON sct.student_id = user.user_id
             JOIN test ON sct.test_id = test.id
-            WHERE user.class = " . intval($classId) . "
+            WHERE user.class = ?
             ORDER BY user.lastname, user.firstname, test.name, sct.test_date DESC
-        ";
-        $result = $db->query($sql);
-        $rows = $db->fetchAll($result);
+        ");
+        $stmt->bind_param("i", $classId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $stmt->close();
         $db->closeConnection();
 
         $tests = [];
         $results = [];
 
         foreach ($rows as $row) {
-                $testName = $row['test_name'];
-                $testId   = $row['test_id'];
-                $userId   = $row['user_id'];
+            $testName = $row['test_name'];
+            $testId   = $row['test_id'];
+            $userId   = $row['user_id'];
 
-                $tests[$testName] = $testId;
+            $tests[$testName] = $testId;
 
-                $results[$userId]['id'] = $userId;
-                $results[$userId]['name'] = $row['lastname'] . ' ' . $row['firstname'];
-                $results[$userId]['results'][$testName][] = [
-                    'grade' => gradeFromPoints($row['result'], $row['maxpoints']),
-                    'maxpoints' => $row['maxpoints'],
-                    'result' => $row['result'],
-                    'date' => date('Y-m-d', strtotime($row['test_date'])),
-                    'id' => $row['id']
-                ];
-            }
+            $results[$userId]['id'] = $userId;
+            $results[$userId]['name'] = $row['lastname'] . ' ' . $row['firstname'];
+            $results[$userId]['results'][$testName][] = [
+                'grade' => gradeFromPoints($row['result'], $row['maxpoints']),
+                'maxpoints' => $row['maxpoints'],
+                'result' => $row['result'],
+                'date' => date('Y-m-d', strtotime($row['test_date'])),
+                'id' => $row['id']
+            ];
+        }
 
         return ['tests' => $tests, 'results' => $results];
     }
-    
+
     public function activateTestToday($testId, $classId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $today = date('Y-m-d');
-        $sql = "UPDATE test_class SET test_end = '$today'WHERE test_id = $testId AND class_id = $classId";
-        $db->query($sql);
+        $today = date('Y-m-d'); // bezpieczna stała, nie pochodzi od użytkownika
+
+        $stmt = $db->prepare("UPDATE test_class SET test_end = ? WHERE test_id = ? AND class_id = ?");
+        $stmt->bind_param("sii", $today, $testId, $classId);
+        $stmt->execute();
+        $stmt->close();
         $db->closeConnection();
     }
 
     public function clearTestResultsForClass($testId, $classId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $sql = "DELETE FROM student_class_test WHERE test_id = $testId AND class_id = $classId";
-        $db->query($sql);
+        $stmt = $db->prepare("DELETE FROM student_class_test WHERE test_id = ? AND class_id = ?");
+        $stmt->bind_param("ii", $testId, $classId);
+        $stmt->execute();
+        $stmt->close();
         $db->closeConnection();
     }
 
     public function deleteTestResultById($id)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $db->query("DELETE FROM student_class_test WHERE id = ".(int)$id);
+        $stmt = $db->prepare("DELETE FROM student_class_test WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
         $db->closeConnection();
     }
 }
-

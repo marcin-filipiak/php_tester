@@ -3,15 +3,19 @@
 // Author: Marcin Filipiak (https://github.com/marcin-filipiak)
 // This file is part of TESTER and is licensed under the MIT License.
 
-
 class ClassModel
 {
     public function getAllClasses()
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $sql = "SELECT * FROM class ORDER BY name ASC";
-        $result = $db->query($sql);
-        $rows = $db->fetchAll($result);
+        $stmt = $db->prepare("SELECT * FROM class ORDER BY name ASC");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $rows = [];
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $stmt->close();
         $db->closeConnection();
         return $rows;
     }
@@ -19,50 +23,63 @@ class ClassModel
     public function getClass($id)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $sql = "SELECT * FROM class WHERE id_class = " . (int)$id;
-        $result = $db->query($sql);
-        $row = $db->fetchAll($result);
+        $stmt = $db->prepare("SELECT * FROM class WHERE id_class = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        $stmt->close();
         $db->closeConnection();
-        return $row[0] ?? false;
+        return $row ?: false;
     }
 
     public function saveClass($id, $name, $description)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $name = addslashes($name);
-        $description = addslashes($description);
 
         if (empty($id)) {
-            $sql = "INSERT INTO class (name, description) VALUES ('$name', '$description')";
+            // INSERT
+            $stmt = $db->prepare("INSERT INTO class (name, description) VALUES (?, ?)");
+            $stmt->bind_param("ss", $name, $description);
         } else {
-            $sql = "UPDATE class SET name = '$name', description = '$description' WHERE id_class = $id";
+            // UPDATE
+            $stmt = $db->prepare("UPDATE class SET name = ?, description = ? WHERE id_class = ?");
+            $stmt->bind_param("ssi", $name, $description, $id);
         }
 
-        $db->query($sql);
+        $stmt->execute();
+        $stmt->close();
         $db->closeConnection();
     }
 
     public function deleteClass($id)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        
-        //usuwanie klasy
-        $sql = "DELETE FROM class WHERE id_class = " . (int)$id;
-        $db->query($sql);
-        
-        //usuwanie userów z tej klasy
-        $sql = "DELETE FROM user WHERE class = " . (int)$id;
-        $db->query($sql);
-        
-        //usuwanie wyników danej klasy
-        $sql = "DELETE FROM student_class_test WHERE class_id = " . (int)$id;
-        $db->query($sql);
-        
-        //usuwanie przypisanych testów do klasy
-        $sql = "DELETE FROM test_class WHERE class_id = " . (int)$id;
-        $db->query($sql);
-        
+
+        // Usuń przypisane testy
+        $stmt = $db->prepare("DELETE FROM test_class WHERE class_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Usuń wyniki uczniów z tej klasy
+        $stmt = $db->prepare("DELETE FROM student_class_test WHERE class_id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Usuń uczniów przypisanych do tej klasy
+        $stmt = $db->prepare("DELETE FROM user WHERE class = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+
+        // Usuń klasę
+        $stmt = $db->prepare("DELETE FROM class WHERE id_class = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $stmt->close();
+
         $db->closeConnection();
     }
 }
-

@@ -21,6 +21,11 @@ class Database {
             die("Connection failed: " . $this->conn->connect_error);
         }
     }
+    
+    
+    public function prepare($sql) {
+        return $this->conn->prepare($sql);
+    }
 
     /**
      * Wykonuje zapytanie do bazy danych
@@ -56,7 +61,7 @@ class Database {
      * Pobiera wszystkie wiersze wyników
      *
      * @param mixed $result Wynik zapytania
-     * @return array       Asocjacyjna tablica z danymi wszystkich wierszy
+     * @return array Asocjacyjna tablica z danymi wszystkich wierszy
      */
     public function fetchAll($result) {
         $data = array();
