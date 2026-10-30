@@ -31,7 +31,13 @@ class LoginController
         // Przykładowa weryfikacja - tutaj powinieneś użyć bezpiecznego logowania
         // np. za pomocą hashowania hasła i sprawdzania w bazie danych.
         if ($UserModel->verifyLogin($firstName,$lastName,$password) == true) {
-	    // Ustaw sesję po udanym logowaniu
+	       // Ustaw sesję po udanym logowaniu
+	       if ($_SERVER['HTTP_USER_AGENT'] == "tester_app"){
+                    $lifetime = 20 * 24 * 60 * 60; // 20 dni = 1728000 sekund
+                    session_set_cookie_params($lifetime);
+                    ini_set('session.gc_maxlifetime', $lifetime);
+                    session_start();
+	        }
             //session_start();
             $_SESSION['user_id'] = $UserModel->user_id;
 	        $_SESSION['user_password'] = $password; 

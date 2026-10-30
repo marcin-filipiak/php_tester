@@ -1,9 +1,25 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.2
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- Generation Time: Dec 16, 2025 at 11:36 AM
+-- Server version: 10.6.22-MariaDB-cll-lve
+-- PHP Version: 8.2.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
+--
+-- Database: `bmf1_tester`
+--
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `answers`
+--
 
 CREATE TABLE `answers` (
   `id` int(10) UNSIGNED NOT NULL,
@@ -79,6 +95,49 @@ CREATE TABLE `subiect` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tasks`
+--
+
+CREATE TABLE `tasks` (
+  `id` int(11) NOT NULL,
+  `subiect_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `content` text NOT NULL,
+  `u_id` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task_class`
+--
+
+CREATE TABLE `task_class` (
+  `id` int(11) NOT NULL,
+  `task_id` int(11) NOT NULL,
+  `class_id` int(11) NOT NULL,
+  `due_date` date DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task_submission`
+--
+
+CREATE TABLE `task_submission` (
+  `id` int(11) NOT NULL,
+  `task_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `submitted_on` timestamp NOT NULL DEFAULT current_timestamp(),
+  `content` text NOT NULL,
+  `grade` int(3) DEFAULT NULL,
+  `comment` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `test`
 --
 
@@ -123,15 +182,6 @@ CREATE TABLE `user` (
   `class` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `function`, `class`) VALUES
-(1, 'su', 'su', '$2y$12$3ls1pzhA6tcjvSF.4gJ/vemRVpH.HCkdX3coFpLEQ3oOA/b/9oEQe', '34cd1562467093672f648cf3317f7da41d2c2b0dea6c4f0f2cb8f2d3cf31b373', 1, NULL);
-
-
 --
 -- Indexes for dumped tables
 --
@@ -170,6 +220,24 @@ ALTER TABLE `student_class_test`
 -- Indexes for table `subiect`
 --
 ALTER TABLE `subiect`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tasks`
+--
+ALTER TABLE `tasks`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `task_class`
+--
+ALTER TABLE `task_class`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `task_submission`
+--
+ALTER TABLE `task_submission`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -225,6 +293,24 @@ ALTER TABLE `subiect`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `tasks`
+--
+ALTER TABLE `tasks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `task_class`
+--
+ALTER TABLE `task_class`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `task_submission`
+--
+ALTER TABLE `task_submission`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `test`
 --
 ALTER TABLE `test`
@@ -241,8 +327,14 @@ ALTER TABLE `test_class`
 --
 ALTER TABLE `user`
   MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  
+  
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`user_id`, `firstname`, `lastname`, `password`, `salt`, `function`, `class`) VALUES
+(1, 'su', 'su', '$2y$12$3ls1pzhA6tcjvSF.4gJ/vemRVpH.HCkdX3coFpLEQ3oOA/b/9oEQe', '34cd1562467093672f648cf3317f7da41d2c2b0dea6c4f0f2cb8f2d3cf31b373', 1, NULL);  
+  
 COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

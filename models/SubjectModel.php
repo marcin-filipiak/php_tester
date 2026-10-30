@@ -8,14 +8,9 @@ class SubjectModel
     public function getAllSubjects()
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("SELECT * FROM subiect ORDER BY name ASC");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        $stmt->close();
+        $sql = "SELECT * FROM subiect ORDER BY name ASC";
+        $result = $db->query($sql);
+        $rows = $db->fetchAll($result);
         $db->closeConnection();
         return $rows;
     }
@@ -23,42 +18,34 @@ class SubjectModel
     public function getSubject($id)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("SELECT * FROM subiect WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $stmt->close();
+        $sql = "SELECT * FROM subiect WHERE id = " . (int)$id;
+        $result = $db->query($sql);
+        $row = $db->fetchAll($result);
         $db->closeConnection();
-        return $row ?: false;
+        return $row[0] ?? false;
     }
 
     public function saveSubject($id, $name)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        $name = addslashes($name);
 
         if (empty($id)) {
-            // INSERT
-            $stmt = $db->prepare("INSERT INTO subiect (name) VALUES (?)");
-            $stmt->bind_param("s", $name);
+            $sql = "INSERT INTO subiect (name) VALUES ('$name')";
         } else {
-            // UPDATE
-            $stmt = $db->prepare("UPDATE subiect SET name = ? WHERE id = ?");
-            $stmt->bind_param("si", $name, $id);
+            $sql = "UPDATE subiect SET name = '$name' WHERE id = $id";
         }
 
-        $stmt->execute();
-        $stmt->close();
+        $db->query($sql);
         $db->closeConnection();
     }
 
     public function deleteSubject($id)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("DELETE FROM subiect WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $stmt->close();
+        $sql = "DELETE FROM subiect WHERE id = " . (int)$id;
+        $db->query($sql);
         $db->closeConnection();
     }
 }
+

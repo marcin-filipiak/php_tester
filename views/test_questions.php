@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<? include("views/menu.php"); ?>
+<?php include("views/menu.php"); ?>
 
 
 <div class="editor-container">
@@ -16,7 +16,7 @@
 <h1>Pytania do testu</h1>
 
 
-<p>Pytań w teście: <?= count($questions) ?></p> 
+<p>Pytań w teście: <?php= count($questions) ?></p> 
 📝 <a href="index.php?action=tests&op=edit&testId=<?= $testId ?>">Edytor testu</a><br> 
 ➕ <a href="index.php?action=test_questions&op=add&testId=<?= $testId ?>">Dodaj pytanie</a>
 
@@ -26,7 +26,7 @@
     <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc;">
         <?php
             $content = htmlspecialchars($question['content']);
-            $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt="">', $content);
+            $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt=""  width="400px"><br>', $content);
             $content = nl2br($content);
         ?>
     

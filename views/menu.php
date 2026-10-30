@@ -14,6 +14,8 @@
 
     <a href="index.php?action=student_tests">Dostępne testy</a>
     <a href="index.php?action=student_results">Twoje Oceny</a>
+    <a href="index.php?action=upload">Pliki</a>
+    <a href="index.php?action=tasks">Zadania</a>
     <a href="index.php?action=account_editor">Edytuj konto</a>
     <a href="index.php?action=logout">Wyloguj</a>
     

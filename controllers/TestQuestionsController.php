@@ -125,14 +125,14 @@ class TestQuestionsController
 
     private function saveAnswer()
     {
-        $answerId = $_POST['answerId'] ?? null;
+        $id = $_POST['answerId'];
         $question_id = $_POST['questionId'];
         $testId = $_POST['testId'];
         $content = $_POST['content'];
         $points = (int) $_POST['points'];
 
         $model = new TestQuestionsModel();
-        $model->saveAnswer($answerId, $question_id, $content, $points);
+        $model->saveAnswer($id, $question_id, $content, $points);
 
         header("Location: index.php?action=test_questions&testId=$testId");
         exit;

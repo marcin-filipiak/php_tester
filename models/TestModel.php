@@ -10,82 +10,79 @@ class TestModel
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
+        $name = addslashes($name);
+        $description = addslashes($description);
+
         if (empty($testId)) {
-            // INSERT
-            $stmt = $db->prepare("INSERT INTO `test` 
-                (`name`, `published`, `questionrand`, `number_per_student`, `description`, `id_subiect`, `u_id`, `shared`) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("siiisiii", $name, $published, $questionrand, $number_per_student, $description, $id_subiect, $u_id, $shared);
-            $stmt->execute();
-            $testId = $db->getInsertId();
-            $stmt->close();
+            $sql = "INSERT INTO `test` 
+                    (`name`, `published`, `questionrand`, `number_per_student`, `description`, `id_subiect`, `u_id`, `shared`) 
+                    VALUES 
+                    ('$name', $published, $questionrand, $number_per_student, '$description', $id_subiect, $u_id, $shared)";
+            $db->query($sql);
+            $testId =  $db->getInsertId(); // <- pobranie nowego ID
         } else {
-            // UPDATE
-            $stmt = $db->prepare("UPDATE `test` 
-                SET `name` = ?, `published` = ?, `questionrand` = ?, `number_per_student` = ?, 
-                    `description` = ?, `id_subiect` = ?, `u_id` = ?, `shared` = ?
-                WHERE `id` = ?");
-            $stmt->bind_param("siiisiiii", $name, $published, $questionrand, $number_per_student, $description, $id_subiect, $u_id, $shared, $testId);
-            $stmt->execute();
-            $stmt->close();
+            $sql = "UPDATE `test` 
+                    SET 
+                        `name` = '$name',
+                        `published` = $published,
+                        `questionrand` = $questionrand,
+                        `number_per_student` = $number_per_student,
+                        `description` = '$description',
+                        `id_subiect` = $id_subiect,
+                        `u_id` = $u_id,
+                        `shared` = $shared
+                    WHERE `id` = $testId";
+            $db->query($sql);
         }
 
         $db->closeConnection();
-        return $testId;
+        return $testId; // <- zwracamy ID testu
     }
 
     // Pobierz dane testu
     public function getTestContent($testId)
     {
-        if (empty($testId)) {
+        if (!empty($testId)) {
+            $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+            $sql = "SELECT * FROM `test` WHERE `id` = '$testId'";
+            $result = $db->query($sql);
+            $row = $db->fetchAll($result);
+            $db->closeConnection();
+
+            if (empty($row)) {
+                return false;
+            } else {
+                return $row[0];
+            }
+        } else {
             return false;
         }
-
-        $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("SELECT * FROM `test` WHERE `id` = ?");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $stmt->close();
-        $db->closeConnection();
-        return $row ?: false;
     }
 
-    // Usuń test i wszystkie powiązane dane
+    // Usuń test i przypisania
     public function deleteTest($testId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
-        // Usuń oceny uczniów
-        $stmt = $db->prepare("DELETE FROM `student_class_test` WHERE `test_id` = ?");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $stmt->close();
+        //przypisania do klas
+        $sqlAssign = "DELETE FROM test_class WHERE test_id = $testId";
+        $db->query($sqlAssign);
 
-        // Usuń przypisania do klas
-        $stmt = $db->prepare("DELETE FROM `test_class` WHERE `test_id` = ?");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $stmt->close();
+        //odpowiedzi do pytań testu
+        $sqlTest = "DELETE a FROM answers a JOIN questions q ON a.question_id = q.id WHERE q.test_id ='$testId'";
+        $db->query($sqlTest);
 
-        // Usuń odpowiedzi (przez JOIN z questions)
-        $stmt = $db->prepare("DELETE a FROM answers a JOIN questions q ON a.question_id = q.id WHERE q.test_id = ?");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $stmt->close();
+        //pytania testu
+        $sqlTest = "DELETE FROM questions WHERE test_id='$testId'";
+        $db->query($sqlTest);
 
-        // Usuń pytania
-        $stmt = $db->prepare("DELETE FROM `questions` WHERE `test_id` = ?");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $stmt->close();
+        //sam test
+        $sqlTest = "DELETE FROM `test` WHERE `id`='$testId'";
+        $db->query($sqlTest);
 
-        // Usuń sam test
-        $stmt = $db->prepare("DELETE FROM `test` WHERE `id` = ?");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $stmt->close();
+        //oceny w klasach dla tego testu
+        $sqlTest = "DELETE FROM `student_class_test` WHERE `test_id`='$testId'";
+        $db->query($sqlTest);
 
         $db->closeConnection();
     }
@@ -94,35 +91,25 @@ class TestModel
     public function getTestsList()
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("
-            SELECT test.*, subiect.name AS subiect_name 
-            FROM test 
-            JOIN subiect ON test.id_subiect = subiect.id 
-            ORDER BY subiect_name
-        ");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        $stmt->close();
+        $sql = "SELECT test.*, subiect.name AS subiect_name FROM test JOIN subiect ON test.id_subiect = subiect.id ORDER BY subiect_name;";
+        $result = $db->query($sql);
+        $row = $db->fetchAll($result);
         $db->closeConnection();
-        return $rows;
+
+        if (empty($row)) {
+            return false;
+        } else {
+            return $row;
+        }
     }
 
     // Pobierz przedmioty
     public function getAllSubiects()
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("SELECT `id`, `name` FROM `subiect` ORDER BY `name` ASC");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        $stmt->close();
+        $sql = "SELECT `id`, `name` FROM `subiect` ORDER BY `name` ASC";
+        $result = $db->query($sql);
+        $rows = $db->fetchAll($result);
         $db->closeConnection();
         return $rows;
     }
@@ -131,14 +118,9 @@ class TestModel
     public function getAllClasses()
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("SELECT `id_class`, `name` FROM `class` ORDER BY `name` ASC");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        $stmt->close();
+        $sql = "SELECT `id_class`, `name` FROM `class` ORDER BY `name` ASC";
+        $result = $db->query($sql);
+        $rows = $db->fetchAll($result);
         $db->closeConnection();
         return $rows;
     }
@@ -147,20 +129,12 @@ class TestModel
     public function getAllClassAssignmentsForTest($testId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("
-            SELECT tc.class_id, c.name AS class_name, tc.test_end 
-            FROM test_class tc
-            JOIN class c ON c.id_class = tc.class_id
-            WHERE tc.test_id = ?
-        ");
-        $stmt->bind_param("i", $testId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        $stmt->close();
+        $sql = "SELECT tc.class_id, c.name AS class_name, tc.test_end 
+                FROM test_class tc
+                JOIN class c ON c.id_class = tc.class_id
+                WHERE tc.test_id = $testId";
+        $result = $db->query($sql);
+        $rows = $db->fetchAll($result);
         $db->closeConnection();
         return $rows;
     }
@@ -174,30 +148,27 @@ class TestModel
 
         // Usuń zaznaczone przypisania
         foreach ($removeClassIds as $removeId) {
-            $stmt = $db->prepare("DELETE FROM test_class WHERE test_id = ? AND class_id = ?");
             $removeId = (int)$removeId;
-            $stmt->bind_param("ii", $testId, $removeId);
-            $stmt->execute();
-            $stmt->close();
+            $sql = "DELETE FROM test_class WHERE test_id = $testId AND class_id = $removeId";
+            $db->query($sql);
         }
 
         // Aktualizuj daty przypisań
         foreach ($classDates as $classId => $date) {
             $classId = (int)$classId;
-            $stmt = $db->prepare("UPDATE test_class SET test_end = ? WHERE test_id = ? AND class_id = ?");
-            $stmt->bind_param("sii", $date, $testId, $classId);
-            $stmt->execute();
-            $stmt->close();
+            $date = addslashes($date);
+            $sql = "UPDATE test_class SET test_end = '$date' WHERE test_id = $testId AND class_id = $classId";
+            $db->query($sql);
         }
 
-        // Dodaj nowe przypisania
+        // Dodaj nowe przypisania (pomijaj te usunięte)
         foreach ($newClassDates as $classId => $date) {
-            if (in_array((string)$classId, (array)$removeClassIds)) continue;
+            echo "dodaje przypisanie";
+            if (in_array($classId, $removeClassIds)) continue;
             $classId = (int)$classId;
-            $stmt = $db->prepare("INSERT INTO test_class (test_id, class_id, test_end) VALUES (?, ?, ?)");
-            $stmt->bind_param("iis", $testId, $classId, $date);
-            $stmt->execute();
-            $stmt->close();
+            $date = addslashes($date);
+            $sql = "INSERT INTO test_class (test_id, class_id, test_end) VALUES ($testId, $classId, '$date')";
+            $db->query($sql);
         }
 
         $db->closeConnection();
@@ -207,31 +178,44 @@ class TestModel
     public function assignmentExists($testId, $classId)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("SELECT COUNT(*) AS cnt FROM test_class WHERE test_id = ? AND class_id = ?");
-        $stmt->bind_param("ii", $testId, $classId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $row = $result->fetch_assoc();
-        $stmt->close();
+        $sql = "SELECT COUNT(*) AS cnt FROM test_class WHERE test_id = $testId AND class_id = $classId";
+        $result = $db->query($sql);
+        $row = $db->fetchAll($result);
         $db->closeConnection();
-        return !empty($row) && $row['cnt'] > 0;
+        return !empty($row) && $row[0]['cnt'] > 0;
     }
 
     // Dodaj nowe przypisanie testu do klasy
     public function addAssignment($testId, $classId, $date)
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-        $stmt = $db->prepare("INSERT INTO test_class (test_id, class_id, test_end) VALUES (?, ?, ?)");
-        $stmt->bind_param("iis", $testId, $classId, $date);
-        $stmt->execute();
-        $stmt->close();
+        $date = addslashes($date);
+        $sql = "INSERT INTO test_class (test_id, class_id, test_end) VALUES ($testId, $classId, '$date')";
+        $db->query($sql);
         $db->closeConnection();
     }
-
-    // Alias (jeśli potrzebny) – lepiej usunąć duplikat lub wywoływać addAssignment
+    
     public function addClassAssignment($testId, $classId, $assignmentDate)
     {
-        // Usunięto echo SQL (debug) – niepotrzebne w produkcji
-        $this->addAssignment($testId, $classId, $assignmentDate);
+        $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+
+        $testId = (int)$testId;
+        $classId = (int)$classId;
+        $assignmentDate = addslashes($assignmentDate);
+
+        // Sprawdź, czy już istnieje przypisanie (opcjonalnie)
+        $sqlCheck = "SELECT COUNT(*) as count FROM test_class WHERE test_id = $testId AND class_id = $classId";
+        $resultCheck = $db->query($sqlCheck);
+        $row = $db->fetchAll($resultCheck);
+        if ($row[0]['count'] > 0) {
+            $db->closeConnection();
+            return; // lub zaktualizuj, jeśli chcesz
+        }
+
+        $sql = "INSERT INTO test_class (test_id, class_id, test_end) VALUES ($testId, $classId, '$assignmentDate')";
+        $db->query($sql);
+        echo $sql;
+        $db->closeConnection();
     }
 }
+

@@ -18,26 +18,36 @@
         
 <?php foreach ($questions as $q): ?>
     <div class="question-block">
-            <?php
-                $content = htmlspecialchars($q['content']);
-                $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt="">', $content);
-                $content = nl2br($content);
-             ?>
-        <p><strong><?//= nl2br(htmlspecialchars($q['content'])) ?><?//= $q['content'] ?> <?= $content ?></strong></p>
-
         <?php
             $isInput = strpos($q['content'], '{?}') !== false;
             $answers = (new TestExecutionModel())->getAnswersByQuestion($q['id']);
+
+            $content = htmlspecialchars($q['content']);
+
+            if ($isInput) {
+                $input = '<input type="text" name="question_' . (int)$q['id'] . '" style="width: 100px">';
+                $content = str_replace('{?}', $input, $content);
+            }
+
+            $content = preg_replace(
+                '/\[image:(.*?)\]/',
+                '<img src="$1" alt="" width="400px">',
+                $content
+            );
+
+            $content = nl2br($content);
         ?>
 
-        <?php if ($isInput): ?>
-            <input type="text" name="question_<?= $q['id'] ?>" style="width: 100%;">
-        <?php else: ?>
+        <p><strong><?= $content ?></strong></p>
+
+        <?php if (!$isInput): ?>
             <table>
                 <?php foreach ($answers as $a): ?>
                     <tr>
                         <td>
-                            <input type="radio" name="question_<?= $q['id'] ?>" value="<?= $a['id'] ?>">
+                            <input type="radio"
+                                   name="question_<?= (int)$q['id'] ?>"
+                                   value="<?= (int)$a['id'] ?>">
                         </td>
                         <td><?= nl2br(htmlspecialchars($a['content'])) ?></td>
                     </tr>

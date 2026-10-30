@@ -13,7 +13,7 @@
     <h1>Dostępne testy do wykonania</h1>
 
     <?php if (empty($classId)): ?>
-        <p>Nie jesteś przypisany do klasy.</p>
+        <p>Nie masz przypisania do klasy.</p>
      <?php endif; ?>
         
     <?php if (empty($tests)): ?>

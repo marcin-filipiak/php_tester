@@ -9,31 +9,24 @@ class StudentResultsModel
     {
         $db = new Database(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
-        $stmt = $db->prepare("
-            SELECT 
-                subiect.id AS subiect_id,
-                subiect.name AS subiect_name,
-                test.name AS test_name,
-                student_class_test.result,
-                student_class_test.maxpoints,
-                student_class_test.test_date
-            FROM student_class_test
-            JOIN test ON student_class_test.test_id = test.id
-            JOIN subiect ON test.id_subiect = subiect.id
-            WHERE student_class_test.student_id = ?
-            ORDER BY subiect.name, student_class_test.test_date DESC
-        ");
-        $stmt->bind_param("i", $userId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $rows = [];
-        while ($row = $result->fetch_assoc()) {
-            $rows[] = $row;
-        }
-        $stmt->close();
+        $sql = "SELECT 
+                    subiect.id AS subiect_id,
+                    subiect.name AS subiect_name,
+                    test.name AS test_name,
+                    student_class_test.result,
+                    student_class_test.maxpoints,
+                    student_class_test.test_date
+                FROM student_class_test
+                JOIN test ON student_class_test.test_id = test.id
+                JOIN subiect ON test.id_subiect = subiect.id
+                WHERE student_class_test.student_id = " . intval($userId) . "
+                ORDER BY subiect.name, student_class_test.test_date DESC";
+
+        $result = $db->query($sql);
+        $rows = $db->fetchAll($result); // poprawka: zmienna $rows
         $db->closeConnection();
 
-        // Grupowanie po subiecie
+        // Grupowanie po subiect
         $grouped = [];
         foreach ($rows as $row) {
             $grouped[$row['subiect_name']][] = $row;
@@ -42,3 +35,4 @@ class StudentResultsModel
         return $grouped;
     }
 }
+

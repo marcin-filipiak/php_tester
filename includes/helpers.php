@@ -98,3 +98,49 @@ function styleRecentGrade($date, $gradeText)
         return htmlspecialchars($gradeText);
     }
 }
+
+
+function markdownToHtml($text) {
+    // Zamiana podstawowych nagłówków
+    $text = preg_replace('/###### (.*)/', '<h6>$1</h6>', $text);
+    $text = preg_replace('/##### (.*)/', '<h5>$1</h5>', $text);
+    $text = preg_replace('/#### (.*)/', '<h4>$1</h4>', $text);
+    $text = preg_replace('/### (.*)/', '<h3>$1</h3>', $text);
+    $text = preg_replace('/## (.*)/', '<h2>$1</h2>', $text);
+    $text = preg_replace('/# (.*)/', '<h1>$1</h1>', $text);
+
+    // Pogrubienie i kursywa
+    $text = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $text);
+    $text = preg_replace('/\*(.*?)\*/', '<em>$1</em>', $text);
+
+    // Lista punktowana
+    $text = preg_replace_callback('/(?:^|\n)\* (.*?)(?=\n|$)/', function($matches) {
+        return '<li>' . $matches[1] . '</li>';
+    }, $text);
+    if (strpos($text, '<li>') !== false) {
+        $text = '<ul>' . $text . '</ul>';
+    }
+
+    // Obrazki ![alt](url) -> <img src="url" alt="alt">
+    $text = preg_replace_callback('/!\[(.*?)\]\((.*?)\)/', function($matches) {
+        $alt = htmlspecialchars($matches[1]);
+        $src = htmlspecialchars($matches[2]);
+        return '<img src="' . $src . '" alt="' . $alt . '">';
+    }, $text);
+
+    // Linki [tekst](url) -> <a href="url" target="_blank">tekst</a>
+    $text = preg_replace_callback('/\[(.*?)\]\((.*?)\)/', function($matches) {
+        $text = htmlspecialchars($matches[1]);
+        $href = htmlspecialchars($matches[2]);
+        return '<a href="' . $href . '" target="_blank">' . $text . '</a>';
+    }, $text);
+
+    // Zamiana entera na <br>
+    $text = nl2br($text);
+
+    return $text;
+}
+
+
+?>
+

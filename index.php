@@ -6,17 +6,14 @@
 // Importowanie konfiguracji
 include('config/Config.php');
 
-
 // Wymuszenie HTTPS
-/*
-if (
+/*if (
     empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off'
 ) {
     $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header('Location: ' . $redirect, true, 301);
     exit();
-}
-*/
+}*/
 
 session_start();
 
@@ -71,8 +68,14 @@ switch ($action) {
     case 'class_results':
         $controller = new ClassResultsController();
     break;
+    case 'tasks':
+        $controller = new TasksController();
+    break;
     case 'importexport':
         $controller = new ImportExportController();
+    break;
+    case 'upload':
+        $controller = new UploadController();
     break;
     case 'logout':
         $controller = new LogoutController();

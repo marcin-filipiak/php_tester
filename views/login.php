@@ -19,24 +19,33 @@
         <form action="index.php?action=login" method="post">
             <div class="form-group">
                 <label for="firstname">imie:</label>
-                <input type="text" id="firstname" name="firstname" required>
+                <input type="text" id="firstname" name="firstname" required autocomplete="given-name">
             </div>
             <div class="form-group">
                 <label for="lastname">nazwisko:</label>
-                <input type="text" id="lastname" name="lastname" required>
+                <input type="text" id="lastname" name="lastname" required autocomplete="family-name">
             </div>
             <div class="form-group">
                 <label for="password">hasło:</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
             </div>
             <button type="submit" class="login-button">Zaloguj</button>
-            <a href="index.php?action=register">Rejestruj</a>
+            <a class="login-button" href="index.php?action=register">Rejestruj</a>
         </form>
-
+        
+        <hr>
+        <a href="https://tester.filipiak.cc/tester.apk" target="_blank">Aplikacja dla Androida</a>
+        
         <?php if (isset($errorMessage)) : ?>
             <p id="error-message" class="error-message"><?php echo $errorMessage; ?></p>
         <?php endif; ?>
     </div>
+
+<div style="margin-top:50px;text-align:center;"> 
+<a href="https://mikr.us/?r=36b1bce5" target="_blank">
+<img src="https://mikr.us/logotypy/mikrus_maly.png" alt="serwery dla pasjonatów">
+</a>
+</div>
 
 </body>
 </html>

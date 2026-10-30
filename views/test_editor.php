@@ -16,7 +16,7 @@
 <form method="POST" action="">
     <input type="hidden" name="testId" value="<?= $testData['id'] ?>">
     <!-- pola edycji testu -->
-    <input type="text" name="name" value="<?= htmlspecialchars($testData['name']) ?>" placeholder="Nazwa testu" required>
+    <input type="text" name="name" value="<?= htmlspecialchars($testData['name']) ?>" placeholder="Nazwa testu">
     <textarea name="description"><?= htmlspecialchars($testData['description']) ?></textarea>
 
     <table>
@@ -35,7 +35,7 @@
     </label>
     <label>
         Przedmiot
-        <select name="id_subiect" required>>
+        <select name="id_subiect">
             <?php foreach ($subiects as $sub): ?>
                 <option value="<?= $sub['id'] ?>" <?= ($sub['id'] == $testData['id_subiect']) ? 'selected' : '' ?>>
                     <?= htmlspecialchars($sub['name']) ?>

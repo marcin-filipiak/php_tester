@@ -8,18 +8,13 @@
 </head>
 <body>
 
-<? include("views/menu.php"); ?>
+<?php include("views/menu.php"); ?>
 
 <?php
 // Grupowanie testów po nazwie przedmiotu
-
 $subjects = [];
-
-if (!empty($testList)) {
-    foreach ($testList as $test) {
-        $name = trim($test['subiect_name'] ?? 'Brak przedmiotu');
-        $subjects[$name][] = $test;
-    }
+foreach ($testList as $test) {
+    $subjects[$test['subiect_name']][] = $test;
 }
 ?>
 

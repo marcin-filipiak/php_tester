@@ -17,7 +17,8 @@
 
 <h1>Podsumowanie testu</h1>
 
-   <p> Twój wynik <?= $result;?> na <?= $maxpoints;?> punkty </p>
+   <p> Twój wynik <?= $result;?> na <?= $maxpoints;?> punkty </p><br>
+   <a href="index.php?action=student_results">Sprawdź swoje oceny</a>
 
 </div>
 
