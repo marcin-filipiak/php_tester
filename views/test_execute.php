@@ -23,6 +23,7 @@
             $answers = (new TestExecutionModel())->getAnswersByQuestion($q['id']);
 
             $content = htmlspecialchars($q['content']);
+            $content = markdownToHtml($content);
 
             if ($isInput) {
                 $input = '<input type="text" name="question_' . (int)$q['id'] . '" style="width: 100px">';

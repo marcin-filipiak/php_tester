@@ -7,13 +7,16 @@
 include('config/Config.php');
 
 // Wymuszenie HTTPS
-/*if (
+/*
+if (
     empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off'
 ) {
     $redirect = 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     header('Location: ' . $redirect, true, 301);
     exit();
 }*/
+
+
 
 session_start();
 

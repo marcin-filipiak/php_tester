@@ -1,0 +1,10 @@
+# Zabezpieczenie katalogu uploads - zabronić bezpośredniego dostępu
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+# Dodatkowo wymusić traktowanie plików jako binarne (nie wykonywać .php)
+<IfModule mod_mime.c>
+    RemoveHandler .php .phtml .php3 .php4 .php5
+    AddType application/octet-stream .php .phtml .php3 .php4 .php5
+</IfModule>

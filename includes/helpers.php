@@ -101,6 +101,50 @@ function styleRecentGrade($date, $gradeText)
 
 
 function markdownToHtml($text) {
+    // 0. Obsługa tabel Markdown (zabezpieczona przed nl2br)
+    $tables = [];
+    $text = preg_replace_callback('/((?:^|\n)\s*\|[^\n]+\|\s*)+/m', function($matches) use (&$tables) {
+        $block = trim($matches[0]);
+        $lines = preg_split('/\r?\n/', $block);
+        
+        if (count($lines) < 2) {
+            return $matches[0];
+        }
+        
+        // Sprawdzenie czy druga linia to separator (np. |---|---|)
+        if (!preg_match('/^\s*\|?[\s\-:]+(?:\|[\s\-:]+)+\|?\s*$/', $lines[1])) {
+            return $matches[0];
+        }
+        
+        $html = "<table>\n<thead>\n<tr>\n";
+        
+        // Nagłówki tabeli
+        $headers = array_map('trim', explode('|', trim($lines[0], '|')));
+        foreach ($headers as $h) {
+            $html .= "<th>{$h}</th>";
+        }
+        $html .= "\n</tr>\n</thead>\n<tbody>\n";
+        
+        // Wiersze danych (od linii 2, pomijając separator)
+        for ($i = 2; $i < count($lines); $i++) {
+            $rowLine = trim($lines[$i]);
+            if (empty($rowLine)) continue;
+            
+            $cells = array_map('trim', explode('|', trim($rowLine, '|')));
+            $html .= "<tr>\n";
+            foreach ($cells as $c) {
+                $html .= "<td>{$c}</td>";
+            }
+            $html .= "\n</tr>\n";
+        }
+        
+        $html .= "</tbody>\n</table>";
+        
+        $index = count($tables);
+        $tables[$index] = $html;
+        return "\n___TABLE_PLACEHOLDER_{$index}___\n";
+    }, $text);
+
     // Zamiana podstawowych nagłówków
     $text = preg_replace('/###### (.*)/', '<h6>$1</h6>', $text);
     $text = preg_replace('/##### (.*)/', '<h5>$1</h5>', $text);
@@ -137,6 +181,11 @@ function markdownToHtml($text) {
 
     // Zamiana entera na <br>
     $text = nl2br($text);
+
+    // Przywrócenie tabel z placeholderów
+    foreach ($tables as $index => $tableHtml) {
+        $text = str_replace("___TABLE_PLACEHOLDER_{$index}___", $tableHtml, $text);
+    }
 
     return $text;
 }

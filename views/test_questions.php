@@ -27,6 +27,7 @@
         <?php
             $content = htmlspecialchars($question['content']);
             $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt=""  width="400px"><br>', $content);
+            $content = markdownToHtml($content);
             $content = nl2br($content);
         ?>
     
