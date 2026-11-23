@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Zmiana hasła</title>
     <style>
     </style>
@@ -31,11 +31,11 @@
     </form>
 
     <?php if (!empty($message)) : ?>
-        <p style="color:green;"><?php echo $message; ?></p>
+        <div class="alert alert-success"><?= htmlspecialchars($message) ?></div>
     <?php endif; ?>
 
     <?php if (!empty($errorMessage)) : ?>
-        <p style="color:red;"><?php echo $errorMessage; ?></p>
+        <div class="alert alert-danger"><?= htmlspecialchars($errorMessage) ?></div>
     <?php endif; ?>
 </div>
 </body>

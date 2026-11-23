@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Import / Eksport pytań</title>
 </head>
 <body>
@@ -16,7 +16,7 @@
   <label>Szukaj testu:</label>
   <input type="text" id="search" placeholder="">
 
-  <form method="GET" action="">
+  <form class="filter-form" method="GET" action="">
     <input type="hidden" name="action" value="importexport">
     <label>Lub wybierz test:</label>
     <select name="test_id" id="test_id">
@@ -52,7 +52,7 @@
     
    <hr> 
     
-    <h1>Generator testu JSON AI</h1>
+    <h2>Generator testu JSON AI</h2>
 
     <form id="testForm" onsubmit="generatePrompt(); return false;">
         <label>

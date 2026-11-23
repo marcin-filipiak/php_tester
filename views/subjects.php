@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Lista przedmiotów</title>
 </head>
 <body>
@@ -14,7 +14,7 @@
 
 <h1>Lista przedmiotów</h1>
 
-<a href="index.php?action=subjects&op=add">+ Dodaj nowy przedmiot</a>
+<a class="btn btn-primary btn-sm" href="index.php?action=subjects&op=add">+ Dodaj nowy przedmiot</a>
 
 <table>
     <thead>

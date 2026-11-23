@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Edytor Pytań</title>
 </head>
 <body>
@@ -16,14 +16,14 @@
 <h1>Pytania do testu</h1>
 
 
-<p>Pytań w teście: <?php= count($questions) ?></p> 
-📝 <a href="index.php?action=tests&op=edit&testId=<?= $testId ?>">Edytor testu</a><br> 
-➕ <a href="index.php?action=test_questions&op=add&testId=<?= $testId ?>">Dodaj pytanie</a>
+<p>Pytań w teście: <?= count($questions) ?></p>
+📝 <a href="index.php?action=tests&op=edit&testId=<?= $testId ?>">Edytor testu</a><br>
+➕ <a class="btn btn-primary btn-sm" href="index.php?action=test_questions&op=add&testId=<?= $testId ?>">Dodaj pytanie</a>
 
 <hr>
 
 <?php foreach ($questions as $question): ?>
-    <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc;">
+    <div class="question-block">
         <?php
             $content = htmlspecialchars($question['content']);
             $content = preg_replace('/\[image:(.*?)\]/', '<img src="$1" alt=""  width="400px"><br>', $content);

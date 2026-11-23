@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Podgląd zadania</title>
 </head>
 <body>
@@ -17,7 +17,7 @@
     <p><a href="index.php?action=tasks">← Powrót do listy zadań</a></p>
 
 
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+    <div class="panel">
         <h3>Twoje załączniki</h3>
 
         <?php if (!empty($files)): ?>

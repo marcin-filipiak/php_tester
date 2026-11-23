@@ -2,8 +2,9 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wyniki klasy</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
 </head>
 <body>
 
@@ -17,7 +18,7 @@
        🗑️ Kasowanie ocen w całym teście lub wybranej oceny.
     </p>
 
-    <form method="GET" action="">
+    <form class="filter-form" method="GET" action="">
         <input type="hidden" name="action" value="class_results">
         <label for="classId">Wybierz klasę:</label>
         <select name="classId" id="classId">

@@ -2,8 +2,9 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testy do wykonania</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
 </head>
 <body>
 
@@ -21,11 +22,11 @@
     <?php else: ?>
         <table>
             <?php foreach ($tests as $test): ?>
-                <tr>
-                    <?php
-                          $rowClass = $test['attempts'] > 0 ? 'done' : 'available';
-                    ?>
-                    <td class="<?= $rowClass; ?>">
+                <?php
+                      $rowClass = $test['attempts'] > 0 ? 'status-done' : 'status-available';
+                ?>
+                <tr class="<?= $rowClass; ?>">
+                    <td>
                         <strong><?= htmlspecialchars($test['name']) ?></strong><br>
                         <?= nl2br(htmlspecialchars($test['description'])) ?><br><br>
                         Dostępny do: <?= htmlspecialchars($test['test_end']) ?><br>
@@ -36,9 +37,9 @@
                     </td>
                     <td>
                         <?php if ($test['attempts'] == 0): ?>
-                            <a href="index.php?action=student_tests&op=start&testId=<?= $test['id'] ?>">Rozpocznij</a>
+                            <a class="btn btn-primary btn-sm" href="index.php?action=student_tests&op=start&testId=<?= $test['id'] ?>">Rozpocznij</a>
                         <?php else: ?>
-                            <a href="index.php?action=student_tests&op=start&testId=<?= $test['id'] ?>">Kolejne podejście</a>
+                            <a class="btn btn-secondary btn-sm" href="index.php?action=student_tests&op=start&testId=<?= $test['id'] ?>">Kolejne podejście</a>
                         <?php endif; ?>
                     </td>
                 </tr>

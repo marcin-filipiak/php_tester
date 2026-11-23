@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Testy</title>
 </head>
 <body>
@@ -21,7 +21,7 @@ foreach ($testList as $test) {
 <div class="page-container">
     <h1>Testy</h1>
 
-    <a href="index.php?action=tests&op=add">+ Dodaj nowy test</a>
+    <a class="btn btn-primary btn-sm" href="index.php?action=tests&op=add">+ Dodaj nowy test</a>
 
     <?php foreach ($subjects as $subjectName => $tests): ?>
         <h3><?php echo htmlspecialchars($subjectName); ?></h3>

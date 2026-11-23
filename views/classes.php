@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Lista klas</title>
     <style>
     </style>
@@ -16,7 +16,7 @@
 
 <h1>Lista klas</h1>
 
-<a href="index.php?action=classes&op=add">+ Dodaj nową klasę</a>
+<a class="btn btn-primary btn-sm" href="index.php?action=classes&op=add">+ Dodaj nową klasę</a>
 
 <table>
     <thead>

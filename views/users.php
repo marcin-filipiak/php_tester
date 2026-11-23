@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= time() ?>">
     <title>Lista użytkowników</title>
 </head>
 <body>
@@ -15,7 +15,7 @@
 
 <h1>Lista użytkowników</h1>
 
-<form method="GET" action="">
+<form class="filter-form" method="GET" action="">
     <input type="hidden" name="action" value="users">
     <select name="class" onchange="this.form.submit()">
         <option value="">Wszystkie klasy</option>
